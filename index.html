@@ -6,11 +6,11 @@
 <title>Quiz</title>
 <style>
 :root{
-  --bg:#f9f9fb;--surface:#fff;--ink:#16181d;--muted:#6b7280;--line:#e4e6eb;--accent:#3948d6;--accent-ink:#fff;--sel:#eef0ff;
+  --bg:#fffaf0;--surface:#fff;--ink:#241915;--muted:#7a6a5f;--line:#efe3cc;--accent:#c8102e;--accent-ink:#fff;--gold:#d4a017;--sel:#fff3d6;--shadow:0 8px 30px rgba(120,80,10,.10);
   color-scheme:light;
 }
 :root[data-theme="dark"]{
-  --bg:#121317;--surface:#1b1d23;--ink:#eceef2;--muted:#9097a5;--line:#2b2e37;--accent:#8c97ff;--accent-ink:#121317;--sel:#23264a;
+  --bg:#0c0c0c;--surface:#181513;--ink:#f7efdd;--muted:#a69a86;--line:#2e2820;--accent:#e0283f;--accent-ink:#fff;--gold:#f0bf3a;--sel:#2a2112;--shadow:0 8px 30px rgba(0,0,0,.5);
   color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0}
@@ -54,15 +54,63 @@ input[type=text]{width:100%;padding:15px 18px;border-radius:14px;border:1px soli
 .note{color:var(--muted);font-size:.875rem;max-width:52ch}
 .code{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;color:var(--muted);margin-top:8px}
 .hide{display:none!important}
+
+body::before,body::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(80px);opacity:.28;pointer-events:none;animation:float 14s ease-in-out infinite alternate}
+body::before{width:420px;height:420px;background:var(--gold);top:-120px;right:-100px}
+body::after{width:360px;height:360px;background:var(--accent);bottom:-120px;left:-100px;animation-delay:-7s}
+:root[data-theme="dark"] body::before,:root[data-theme="dark"] body::after{opacity:.2}
+@keyframes float{to{transform:translate(30px,40px) scale(1.1)}}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pop{50%{transform:scale(1.03)}}
+header b{display:flex;align-items:center;gap:10px}
+header b::before{content:"";width:14px;height:14px;background:linear-gradient(135deg,var(--gold),var(--accent));transform:rotate(45deg);border-radius:3px}
+.icon{box-shadow:var(--shadow);transition:transform .3s}
+.icon:hover{transform:rotate(180deg)}
+.hero{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:clamp(24px,5vw,44px);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:linear-gradient(90deg,var(--gold),var(--accent))}
+h1::after{content:"";display:block;width:64px;height:4px;border-radius:4px;background:var(--gold);margin-top:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.chips span{padding:6px 14px;border-radius:999px;background:var(--sel);border:1px solid var(--gold);font-size:.85rem;font-weight:600}
+.btn{box-shadow:0 6px 18px rgba(200,16,46,.28)}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{box-shadow:none}
+.btn.ghost:hover{border-color:var(--gold)}
+input[type=text]:focus{border-color:var(--gold);outline:0;box-shadow:0 0 0 4px rgba(212,160,23,.2)}
+.bar{height:8px}
+.bar i{background:linear-gradient(90deg,var(--gold),var(--accent))}
+.count{display:flex;justify-content:space-between}
+.count b{color:var(--gold)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(18px,4vw,32px);box-shadow:var(--shadow);margin-bottom:22px}
+#qbox>*{animation:in .4s both}
+.card .opts{margin-bottom:0}
+.opt{animation:in .4s both;animation-delay:calc(var(--i,0)*45ms);box-shadow:0 2px 8px rgba(120,80,10,.05)}
+.opt:hover{border-color:var(--gold);transform:translateY(-2px)}
+.opt:hover .k{border-color:var(--gold);color:var(--gold)}
+.opt.on{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,160,23,.25);animation:pop .3s}
+.opt.on .k{background:var(--accent);border-color:var(--accent);color:#fff}
+.dots button{transition:transform .15s}
+.dots button:hover{transform:scale(1.15);border-color:var(--gold)}
+.dots button.done{background:var(--gold);border-color:var(--gold);color:#241915}
+.dots button.cur{background:var(--accent);border-color:var(--accent)}
+.res{text-align:center}
+.score{background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+.score small{-webkit-text-fill-color:var(--muted)}
+.msg{font-size:1.4rem;font-weight:650;margin-top:12px}
+.res .row{justify-content:center}.res .note{margin:0 auto}
+.hint{color:var(--muted);font-size:.8rem;text-align:center;margin-top:18px}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media(max-width:560px){.hint{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header><b id="brand"></b><button class="icon" id="theme" aria-label="Toggle dark mode">◐</button></header>
 
-  <section id="start">
+  <section id="start" class="hero">
     <h1 id="title"></h1>
     <p class="sub" id="intro"></p>
+    <div class="chips"><span>20 questions</span><span>6 options each</span><span>1 attempt</span></div>
     <input type="text" id="name" placeholder="Your full name" maxlength="60" autocomplete="name">
     <button class="btn" id="go">Start quiz</button>
   </section>
@@ -70,7 +118,7 @@ input[type=text]{width:100%;padding:15px 18px;border-radius:14px;border:1px soli
   <section id="quiz" class="hide">
     <div class="bar"><i id="bar"></i></div>
     <div class="count" id="count"></div>
-    <div id="qbox"></div>
+    <div class="card"><div id="qbox"></div></div>
     <div class="dots" id="dots"></div>
     <div class="nav">
       <button class="btn ghost" id="prev">Back</button>
@@ -78,15 +126,18 @@ input[type=text]{width:100%;padding:15px 18px;border-radius:14px;border:1px soli
     </div>
   </section>
 
-  <section id="result" class="hide">
+  <section id="result" class="hide res">
     <p class="note" id="who"></p>
     <div class="score" id="score"></div>
+    <div class="msg" id="msg"></div>
     <div class="row">
       <button class="btn" id="dl">Download result</button>
     </div>
     <p class="note">Send the downloaded file to your teacher. Your attempt is locked on this device, so reopening this page will show this result again.</p>
     <p class="code" id="code"></p>
   </section>
+  <canvas id="fx"></canvas>
+  <p class="hint" id="hint">Tip: press A–F to answer, ← → to move</p>
 </div>
 
 <script>
@@ -161,13 +212,14 @@ const sig = () => hash([S.name, letters(S.answers), S.finishedAt, CONFIG.secret]
 function render() {
   const i = S.cur, q = QUESTIONS[i], n = QUESTIONS.length;
   $("bar").style.width = ((i + 1) / n * 100) + "%";
-  $("count").textContent = `Question ${i + 1} of ${n}`;
+  $("count").innerHTML = `<span>Question ${i + 1} of ${n}</span><b>${S.answers.filter(v => v != null).length} answered</b>`;
   const box = $("qbox"); box.innerHTML = "";
   const h = document.createElement("h2"); h.className = "q"; h.textContent = q.q; box.appendChild(h);
   if (q.img) { const im = document.createElement("img"); im.className = "qimg"; im.src = q.img; im.alt = ""; box.appendChild(im); }
   const g = document.createElement("div"); g.className = "opts"; g.setAttribute("role", "radiogroup");
   q.options.forEach((o, k) => {
     const b = document.createElement("button");
+    b.style.setProperty("--i", k);
     b.className = "opt" + (S.answers[i] === k ? " on" : "");
     b.setAttribute("role", "radio"); b.setAttribute("aria-checked", S.answers[i] === k);
     const key = document.createElement("span"); key.className = "k"; key.textContent = L[k]; b.appendChild(key);
@@ -200,8 +252,26 @@ function finish() {
 function showResult() {
   show("result");
   $("who").textContent = S.name;
-  $("score").innerHTML = `${score()}<small> / ${QUESTIONS.length}</small>`;
+  const sc = score(), tot = QUESTIONS.length, pct = sc / tot;
+  $("msg").textContent = pct >= .9 ? "Outstanding!" : pct >= .7 ? "Great work!" : pct >= .5 ? "Solid effort!" : "Good try, keep practicing!";
+  $("hint").classList.add("hide");
+  let n = 0; const tick = () => { $("score").innerHTML = `${n}<small> / ${tot}</small>`; if (n++ < sc) setTimeout(tick, 70); };
+  tick();
+  if (pct >= .5 && !matchMedia("(prefers-reduced-motion: reduce)").matches) confetti();
   $("code").textContent = "Verification code " + sig();
+}
+
+function confetti() {
+  const c = $("fx"), x = c.getContext("2d"); c.width = innerWidth; c.height = innerHeight;
+  const cols = ["#f0bf3a", "#d4a017", "#e0283f", "#ffffff"];
+  const p = Array.from({length: 130}, () => ({x: Math.random() * c.width, y: -20 - Math.random() * c.height * .6, w: 6 + Math.random() * 6, h: 4 + Math.random() * 6,
+    vx: Math.random() * 2 - 1, vy: 2 + Math.random() * 3, r: Math.random() * 6, vr: Math.random() * .2 - .1, c: cols[Math.random() * cols.length | 0]}));
+  let f = 0;
+  (function t() {
+    x.clearRect(0, 0, c.width, c.height);
+    p.forEach(o => { o.x += o.vx; o.y += o.vy; o.r += o.vr; x.save(); x.translate(o.x, o.y); x.rotate(o.r); x.fillStyle = o.c; x.fillRect(-o.w / 2, -o.h / 2, o.w, o.h); x.restore(); });
+    if (++f < 280) requestAnimationFrame(t); else x.clearRect(0, 0, c.width, c.height);
+  })();
 }
 
 function download() {
@@ -221,6 +291,7 @@ function download() {
 }
 
 $("go").onclick = () => {
+  $("hint").classList.remove("hide");
   const name = $("name").value.trim();
   if (!name) { $("name").focus(); return; }
   S = {name, cur: 0, answers: Array(QUESTIONS.length).fill(null), finished: false, startedAt: new Date().toISOString()};
@@ -230,10 +301,19 @@ $("prev").onclick = () => { if (S.cur > 0) { S.cur--; save(); render(); } };
 $("next").onclick = () => { if (S.cur < QUESTIONS.length - 1) { S.cur++; save(); render(); } else finish(); };
 $("dl").onclick = download;
 
+document.addEventListener("keydown", e => {
+  if (!S || S.finished || $("quiz").classList.contains("hide") || e.target.tagName === "INPUT") return;
+  const k = L.indexOf(e.key.toUpperCase());
+  if (e.key.length === 1 && k > -1) { S.answers[S.cur] = k; save(); render(); }
+  else if (e.key === "ArrowRight" && S.cur < QUESTIONS.length - 1) $("next").click();
+  else if (e.key === "ArrowLeft" && S.cur > 0) $("prev").click();
+});
+
 S = load();
 if (S && S.finished) showResult();
 else if (S) { show("quiz"); render(); }
 else show("start");
+$("hint").classList.toggle("hide", !S || S.finished || false);
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 </script>
