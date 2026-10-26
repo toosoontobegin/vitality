@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz</title>
+<style>
+:root{
+  --bg:#f9f9fb;--surface:#fff;--ink:#16181d;--muted:#6b7280;--line:#e4e6eb;--accent:#3948d6;--accent-ink:#fff;--sel:#eef0ff;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#121317;--surface:#1b1d23;--ink:#eceef2;--muted:#9097a5;--line:#2b2e37;--accent:#8c97ff;--accent-ink:#121317;--sel:#23264a;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+.wrap{max-width:760px;margin:0 auto;padding:max(24px,env(safe-area-inset-top)) 20px max(32px,env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+header b{font-weight:600;letter-spacing:-.01em}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.icon{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;background:var(--surface)}
+.btn{padding:13px 26px;border-radius:999px;font-weight:600;background:var(--accent);color:var(--accent-ink);transition:transform .15s,opacity .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn[disabled]{opacity:.35;pointer-events:none}
+h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.1;letter-spacing:-.03em;font-weight:650}
+.sub{color:var(--muted);margin:14px 0 32px;max-width:46ch}
+input[type=text]{width:100%;padding:15px 18px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;margin-bottom:16px}
+.bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:10px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .35s}
+.count{color:var(--muted);font-size:.875rem;margin-bottom:28px}
+.q{font-size:clamp(1.35rem,4vw,1.9rem);line-height:1.3;letter-spacing:-.02em;font-weight:600;margin-bottom:22px}
+.qimg{display:block;max-width:100%;max-height:300px;border-radius:16px;border:1px solid var(--line);margin-bottom:24px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px}
+@media(max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--surface);transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--muted)}
+.opt .k{flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:.8rem;color:var(--muted)}
+.opt img{max-width:100%;max-height:110px;border-radius:10px;display:block}
+.opt.on{border-color:var(--accent);background:var(--sel)}
+.opt.on .k{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.nav{display:flex;justify-content:space-between;gap:12px}
+.dots{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px}
+.dots button{width:26px;height:26px;border-radius:8px;border:1px solid var(--line);font-size:.7rem;color:var(--muted)}
+.dots button.done{background:var(--sel);color:var(--ink);border-color:var(--accent)}
+.dots button.cur{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.score{font-size:clamp(4rem,16vw,7rem);font-weight:650;letter-spacing:-.05em;line-height:1}
+.score small{font-size:.3em;color:var(--muted);font-weight:500;letter-spacing:0}
+.row{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0}
+.note{color:var(--muted);font-size:.875rem;max-width:52ch}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:.85rem;color:var(--muted);margin-top:8px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><b id="brand"></b><button class="icon" id="theme" aria-label="Toggle dark mode">◐</button></header>
+
+  <section id="start">
+    <h1 id="title"></h1>
+    <p class="sub" id="intro"></p>
+    <input type="text" id="name" placeholder="Your full name" maxlength="60" autocomplete="name">
+    <button class="btn" id="go">Start quiz</button>
+  </section>
+
+  <section id="quiz" class="hide">
+    <div class="bar"><i id="bar"></i></div>
+    <div class="count" id="count"></div>
+    <div id="qbox"></div>
+    <div class="dots" id="dots"></div>
+    <div class="nav">
+      <button class="btn ghost" id="prev">Back</button>
+      <button class="btn" id="next">Next</button>
+    </div>
+  </section>
+
+  <section id="result" class="hide">
+    <p class="note" id="who"></p>
+    <div class="score" id="score"></div>
+    <div class="row">
+      <button class="btn" id="dl">Download result</button>
+    </div>
+    <p class="note">Send the downloaded file to your teacher. Your attempt is locked on this device, so reopening this page will show this result again.</p>
+    <p class="code" id="code"></p>
+  </section>
+</div>
+
+<script>
+/* ============ 1. SETTINGS (edit me) ============ */
+const CONFIG = {
+  brand: "Class Quiz",
+  title: "Quiz title",
+  intro: "20 questions, one correct answer each. Your progress saves automatically, even if your connection drops.",
+  quizId: "quiz-v1",          // change this to open a fresh attempt for everyone (e.g. a new quiz)
+  secret: "change-this-secret" // used for the result's verification code
+};
+
+/* ============ 2. QUESTIONS (edit me) ============
+   Each question:
+     q:       question text
+     img:     image URL for the question ("" for none)
+     options: 6 items, each { t: "text", img: "image URL or empty" }
+     answer:  index of the correct option, 0 = A, 1 = B ... 5 = F
+   Put your images in an "img" folder next to this file, e.g. "img/q1.jpg".
+   Anyone can read this file in the browser, so answers are visible to a determined student. */
+const ph = (label, w = 600, h = 300) => "data:image/svg+xml," + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#c9ccd6"/><text x="50%" y="50%" fill="#555a6b" font-family="sans-serif" font-size="22" text-anchor="middle" dominant-baseline="middle">${label}</text></svg>`);
+const L = "ABCDEF";
+const QUESTIONS = Array.from({length: 20}, (_, i) => ({
+  q: `Question ${i + 1} text goes here`,
+  img: "",
+  options: L.split("").map(c => ({t: `Answer option ${c}`, img: ""})),
+  answer: 0
+}));
+// Example: question 2 has an image
+QUESTIONS[1].img = ph("Question image placeholder");
+// Example: question 3 has image answers
+QUESTIONS[2].options = L.split("").map(c => ({t: "", img: ph(`Option ${c}`, 300, 160)}));
+// Example of editing one question:
+// QUESTIONS[0] = { q: "What is 2 + 2?", img: "", answer: 1,
+//   options: [{t:"3",img:""},{t:"4",img:""},{t:"5",img:""},{t:"6",img:""},{t:"7",img:""},{t:"8",img:""}] };
+
+/* ============ 3. APP (no need to edit) ============ */
+const $ = id => document.getElementById(id);
+const KEY = "quiz:" + CONFIG.quizId;
+let S = null;
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } };
+
+// theme
+const root = document.documentElement;
+const savedTheme = (() => { try { return localStorage.getItem("quiz:theme"); } catch (e) { return null; } })();
+root.dataset.theme = savedTheme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+$("theme").onclick = () => {
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+  try { localStorage.setItem("quiz:theme", root.dataset.theme); } catch (e) {}
+};
+
+document.title = CONFIG.title;
+$("brand").textContent = CONFIG.brand;
+$("title").textContent = CONFIG.title;
+$("intro").textContent = CONFIG.intro;
+
+const show = id => ["start", "quiz", "result"].forEach(s => $(s).classList.toggle("hide", s !== id));
+
+function hash(str) { // small non-cryptographic checksum, to make edited result files detectable
+  let a = 0xdeadbeef, b = 0x41c6ce57;
+  for (let i = 0; i < str.length; i++) { const c = str.charCodeAt(i); a = Math.imul(a ^ c, 2654435761); b = Math.imul(b ^ c, 1597334677); }
+  a = Math.imul(a ^ (a >>> 16), 2246822507) ^ Math.imul(b ^ (b >>> 13), 3266489909);
+  b = Math.imul(b ^ (b >>> 16), 2246822507) ^ Math.imul(a ^ (a >>> 13), 3266489909);
+  return (4294967296 * (2097151 & b) + (a >>> 0)).toString(16).toUpperCase().padStart(14, "0");
+}
+const letters = a => a.map(v => v == null ? "-" : L[v]).join("");
+const score = () => S.answers.reduce((n, v, i) => n + (v === QUESTIONS[i].answer ? 1 : 0), 0);
+const sig = () => hash([S.name, letters(S.answers), S.finishedAt, CONFIG.secret].join("|"));
+
+function render() {
+  const i = S.cur, q = QUESTIONS[i], n = QUESTIONS.length;
+  $("bar").style.width = ((i + 1) / n * 100) + "%";
+  $("count").textContent = `Question ${i + 1} of ${n}`;
+  const box = $("qbox"); box.innerHTML = "";
+  const h = document.createElement("h2"); h.className = "q"; h.textContent = q.q; box.appendChild(h);
+  if (q.img) { const im = document.createElement("img"); im.className = "qimg"; im.src = q.img; im.alt = ""; box.appendChild(im); }
+  const g = document.createElement("div"); g.className = "opts"; g.setAttribute("role", "radiogroup");
+  q.options.forEach((o, k) => {
+    const b = document.createElement("button");
+    b.className = "opt" + (S.answers[i] === k ? " on" : "");
+    b.setAttribute("role", "radio"); b.setAttribute("aria-checked", S.answers[i] === k);
+    const key = document.createElement("span"); key.className = "k"; key.textContent = L[k]; b.appendChild(key);
+    if (o.img) { const im = document.createElement("img"); im.src = o.img; im.alt = o.t || "Option " + L[k]; b.appendChild(im); }
+    if (o.t) { const t = document.createElement("span"); t.textContent = o.t; b.appendChild(t); }
+    b.onclick = () => { S.answers[i] = k; save(); render(); };
+    g.appendChild(b);
+  });
+  box.appendChild(g);
+  const d = $("dots"); d.innerHTML = "";
+  QUESTIONS.forEach((_, k) => {
+    const b = document.createElement("button");
+    b.textContent = k + 1; b.setAttribute("aria-label", "Go to question " + (k + 1));
+    b.className = k === i ? "cur" : S.answers[k] != null ? "done" : "";
+    b.onclick = () => { S.cur = k; save(); render(); };
+    d.appendChild(b);
+  });
+  $("prev").disabled = i === 0;
+  $("next").textContent = i === n - 1 ? "Finish" : "Next";
+  scrollTo({top: 0});
+}
+
+function finish() {
+  const blank = S.answers.filter(v => v == null).length;
+  if (blank && !confirm(`You have ${blank} unanswered question${blank > 1 ? "s" : ""}. Finish anyway? You can’t retake the quiz.`)) return;
+  if (!blank && !confirm("Submit your answers? You can’t retake the quiz.")) return;
+  S.finished = true; S.finishedAt = new Date().toISOString(); save(); showResult();
+}
+
+function showResult() {
+  show("result");
+  $("who").textContent = S.name;
+  $("score").innerHTML = `${score()}<small> / ${QUESTIONS.length}</small>`;
+  $("code").textContent = "Verification code " + sig();
+}
+
+function download() {
+  const lines = [
+    CONFIG.title, "=".repeat(CONFIG.title.length), "",
+    "Name:      " + S.name,
+    "Submitted: " + S.finishedAt,
+    "Score:     " + score() + " / " + QUESTIONS.length, "",
+    "Answers (A-F, - = blank):"
+  ];
+  S.answers.forEach((v, i) => lines.push(`  ${String(i + 1).padStart(2, " ")}. ${v == null ? "-" : L[v]}  ${v === QUESTIONS[i].answer ? "correct" : "wrong"}`));
+  lines.push("", "Answer string: " + letters(S.answers), "Verification code: " + sig());
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n")], {type: "text/plain"}));
+  a.download = "quiz-result-" + S.name.trim().replace(/\W+/g, "-").toLowerCase() + ".txt";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+$("go").onclick = () => {
+  const name = $("name").value.trim();
+  if (!name) { $("name").focus(); return; }
+  S = {name, cur: 0, answers: Array(QUESTIONS.length).fill(null), finished: false, startedAt: new Date().toISOString()};
+  save(); show("quiz"); render();
+};
+$("prev").onclick = () => { if (S.cur > 0) { S.cur--; save(); render(); } };
+$("next").onclick = () => { if (S.cur < QUESTIONS.length - 1) { S.cur++; save(); render(); } else finish(); };
+$("dl").onclick = download;
+
+S = load();
+if (S && S.finished) showResult();
+else if (S) { show("quiz"); render(); }
+else show("start");
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+</body>
+</html>
