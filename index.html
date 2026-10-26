@@ -26,6 +26,8 @@ h1,h2,.bf{font-family:Bungee,Impact,sans-serif;font-weight:400;margin:.2em 0}
 .qc{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .qc img{max-width:100%;width:300px;border-radius:12px;border:3px solid #000}
 .qc>div{flex:1;min-width:220px}
+/* Memperbaiki font teks soal agar menggunakan Nunito dan huruf normal (tidak kapital semua) */
+.qc h2{color:var(--mt);font-size:1.1rem;font-family:'Nunito',sans-serif;font-weight:800;margin:.2em 0}
 .tag{display:inline-block;background:var(--pk);color:#fff;border:2px solid #000;border-radius:99px;padding:2px 12px;font-family:Bungee,sans-serif;font-size:.8rem}
 .hint{color:#cfc4ff;margin:.4em 0 0}
 input{font:inherit;padding:10px 14px;border-radius:12px;border:3px solid #000;width:min(100%,320px);margin:8px 0;text-align:center}
@@ -72,7 +74,7 @@ td,th{padding:6px 8px;border-bottom:2px solid #000}
 /* =====================  EDIT YOUR QUESTIONS HERE  =====================
    t   : 'bow' (Q1-2) | 'space' (Q3-4) | 'trade' (Q5-6) | 'tycoon' (Q7-10)
    q   : question text
-   img : image path like 'img/q1.png' (use null for tycoon / text-only)
+   img : image path like 'img/1.svg' (use null for tycoon / text-only)
    o   : answer options (4 for bow/space/tycoon, 6 for trade). Each is text 'Answer' OR {t:'text',img:'img/a.png'} (img and/or t)
    a   : index of the correct option (0 = first)
    song: (optional) 'audio/q1.mp3' OR a built-in tune: 'tune:arcade' | 'tune:battle' | 'tune:boss' | 'tune:chill' | 'tune:space'. Leave out = default tune for that game.
@@ -81,16 +83,16 @@ td,th{padding:6px 8px;border-bottom:2px solid #000}
 ======================================================================== */
 const ph=t=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="480" height="220"><rect width="100%" height="100%" fill="#ffd23f"/><text x="50%" y="50%" text-anchor="middle" font-size="30" font-family="sans-serif" fill="#1b1240">${t}</text></svg>`);
 const Q=[
- {t:'bow',q:'Pada lingkaran berpusat O, sudut keliling \(\angle KLM=52^\circ\). Tentukan besar sudut pusat \(\angle KOM\).',img:ph('img/1.svg'),o:['26°','78°','52°','104°'],a:3},
- {t:'bow',q:'Garis AB merupakan diameter lingkaran dengan pusat O. Jika \(\angle BOC=60^\circ\), tentukan besar \(\angle AOC\).',img:ph('img/2.svg'),o:['30°','90°','150°','120°'],a:3},
- {t:'space',q:'Pada lingkaran berpusat O, OM tegak lurus tali busur AB. Jika \(\angle AOM=35^\circ\), tentukan besar sudut pusat \(\angle AOB\).',img:ph('img/3.svg'),o:['35°','55°','70°','60°'],a:2},
- {t:'space',q:'Dua lingkaran berpusat P dan Q memiliki jari-jari 4 cm dan 2 cm. Jarak kedua pusatnya 10 cm. Berapakah panjang garis singgung persekutuan dalam kedua lingkaran?',img:ph('img/4.svg'),o:['8 cm','12 cm','14 cm','10 cm'],a:0},
- {t:'trade',q:'Sebuah lingkaran berjari-jari 14 cm memiliki sudut pusat \(\angle AOB=90^\circ\). Tentukan panjang busur AB.',img:ph('img/5.svg'),o:['22 cm','44 cm','88 cm','11 cm','67 cm','99 cm'],a:0},
- {t:'trade',q:'Sebuah lingkaran berjari-jari 14 cm memiliki juring dengan sudut pusat \(45^\circ\). Tentukan luas juring tersebut. Gunakan \(\pi=\frac{22}{7}\).',img:ph('img/6.svg'),o:['38,5 cm²','77 cm²','154 cm²','308 cm²','1.232 cm²','616 cm²'],a:1},
- {t:'tycoon',q:'Sebuah taman berbentuk lingkaran memiliki jari-jari 14 m. Sebagian taman dengan sudut pusat \(90^\circ\) akan ditanami bunga. Luas area yang ditanami bunga adalah ....',img:null,o:['154 m²','308 m²','616 m²','77 m²'],a:0},
- {t:'tycoon',q:'Sebuah pizza berdiameter 56 cm dipotong sehingga satu potong memiliki sudut pusat \(45^\circ\). Luas satu potong pizza adalah.... (Gunakan \(\pi=\frac{22}{7}\)).',img:null,o:['2.464 cm²','154 cm²','308 cm²','154 cm²'],a:2},
- {t:'tycoon',q:'Sebuah kolam berbentuk lingkaran memiliki jari-jari 21 m. Area dengan sudut pusat \(120^\circ\) akan diberi keramik. Luas area tersebut adalah.... (Gunakan \(\pi=\frac{22}{7}\)).',img:null,o:['231 m²','693 m²','462 m²','1.848 m²'],a:2},
- {t:'tycoon',q:'Sebuah roda berbentuk lingkaran memiliki diameter 56 cm. Titik pada tepi roda menempuh busur dengan sudut pusat \(225^\circ\) untuk setiap putaran yang dilakukan. Jika roda berputar sebanyak 12 kali dengan sudut putaran yang sama, total panjang lintasan titik tersebut adalah.... (Gunakan \(\pi=\frac{22}{7}\)).',img:null,o:['1.100 cm','1.320 cm','880 cm','1390 cm'],a:1},
+ {t:'bow',q:'Pada lingkaran berpusat O, sudut keliling \\(\\angle KLM=52^\\circ\\). Tentukan besar sudut pusat \\(\\angle KOM\\).',img:'img/1.svg',o:['26°','78°','52°','104°'],a:3},
+ {t:'bow',q:'Garis AB merupakan diameter lingkaran dengan pusat O. Jika \\(\\angle BOC=60^\\circ\\), tentukan besar \\(\\angle AOC\\).',img:'img/2.svg',o:['30°','90°','150°','120°'],a:3},
+ {t:'space',q:'Pada lingkaran berpusat O, OM tegak lurus tali busur AB. Jika \\(\\angle AOM=35^\\circ\\), tentukan besar sudut pusat \\(\\angle AOB\\).',img:'img/3.svg',o:['35°','55°','70°','60°'],a:2},
+ {t:'space',q:'Dua lingkaran berpusat P dan Q memiliki jari-jari 4 cm dan 2 cm. Jarak kedua pusatnya 10 cm. Berapakah panjang garis singgung persekutuan dalam kedua lingkaran?',img:'img/4.svg',o:['8 cm','12 cm','14 cm','10 cm'],a:0},
+ {t:'trade',q:'Sebuah lingkaran berjari-jari 14 cm memiliki sudut pusat \\(\\angle AOB=90^\\circ\\). Tentukan panjang busur AB.',img:'img/5.svg',o:['22 cm','44 cm','88 cm','11 cm','67 cm','99 cm'],a:0},
+ {t:'trade',q:'Sebuah lingkaran berjari-jari 14 cm memiliki juring dengan sudut pusat \\(45^\\circ\\). Tentukan luas juring tersebut. Gunakan \\(\\pi=\\frac{22}{7}\\).',img:'img/6.svg',o:['38,5 cm²','77 cm²','154 cm²','308 cm²','1.232 cm²','616 cm²'],a:1},
+ {t:'tycoon',q:'Sebuah taman berbentuk lingkaran memiliki jari-jari 14 m. Sebagian taman dengan sudut pusat \\(90^\\circ\\) akan ditanami bunga. Luas area yang ditanami bunga adalah ....',img:null,o:['154 m²','308 m²','616 m²','77 m²'],a:0},
+ {t:'tycoon',q:'Sebuah pizza berdiameter 56 cm dipotong sehingga satu potong memiliki sudut pusat \\(45^\\circ\\). Luas satu potong pizza adalah.... (Gunakan \\(\\pi=\\frac{22}{7}\\)).',img:null,o:['2.464 cm²','154 cm²','308 cm²','154 cm²'],a:2},
+ {t:'tycoon',q:'Sebuah kolam berbentuk lingkaran memiliki jari-jari 21 m. Area dengan sudut pusat \\(120^\\circ\\) akan diberi keramik. Luas area tersebut adalah.... (Gunakan \\(\\pi=\\frac{22}{7}\\)).',img:null,o:['231 m²','693 m²','462 m²','1.848 m²'],a:2},
+ {t:'tycoon',q:'Sebuah roda berbentuk lingkaran memiliki diameter 56 cm. Titik pada tepi roda menempuh busur dengan sudut pusat \\(225^\\circ\\) untuk setiap putaran yang dilakukan. Jika roda berputar sebanyak 12 kali dengan sudut putaran yang sama, total panjang lintasan titik tersebut adalah.... (Gunakan \\(\\pi=\\frac{22}{7}\\)).',img:null,o:['1.100 cm','1.320 cm','880 cm','1390 cm'],a:1},
 ];
 const IMG_RIGHT=ph('img/RIGHT.jpg'),IMG_WRONG=ph('img/WRONG.jpg');   // default result images, e.g. 'img/right.png'
 const PTS=100;                                   // points per correct answer
@@ -147,8 +149,14 @@ function intro(){
 function startQ(i,resume){
  stopAll();S.qi=i;if(!resume)S.used=0;locked=false;paused=false;const q=Q[i];
  st.innerHTML=`<div class="lay${q.t==='tycoon'?' one':''}"><div><div class="qc">${q.img?`<img src="${q.img}" alt="Question image">`:''}<div><span class="tag">${TITLE[q.t]}</span>
-  <h2>${q.t==='tycoon'?'Rebirth round '+(i-5)+'/4':esc(q.q)}</h2><p class="hint">${HINT[q.t]}</p></div></div><div id="play" style="position:relative"></div></div>
+  <h2>${q.t==='tycoon'?'Rebirth round '+(i-5)+'/4':q.q}</h2><p class="hint">${HINT[q.t]}</p></div></div><div id="play" style="position:relative"></div></div>
   ${q.t==='tycoon'?'':`<aside class="ans"><h2>Answers</h2>${q.o.map((o,k)=>`<p><b>${L[k]}</b>${oh(o)}</p>`).join('')}</aside>`}</div>`;
+ 
+ // Memicu MathJax agar merender ulang rumus LaTeX pada teks soal baru
+ if (window.MathJax && window.MathJax.typeset) {
+     window.MathJax.typeset();
+ }
+
  G=GAMES[q.t]($('#play'),q,i);music(q.song||'tune:'+DEF[q.t],i);
  tm=setInterval(()=>{if(paused||locked)return;S.used++;if(S.used%3===0)save();hud();if(S.used>=LIMIT)done(null,S.qi)},1000);
  hud();save();
