@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quiz Arcade</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#1b1240;--pn:#2b1f66;--pk:#ff4f9a;--yl:#ffd23f;--mt:#3ef2b0;--tx:#fff7e6;--rd:#ff5b5b}
@@ -79,16 +81,16 @@ td,th{padding:6px 8px;border-bottom:2px solid #000}
 ======================================================================== */
 const ph=t=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="480" height="220"><rect width="100%" height="100%" fill="#ffd23f"/><text x="50%" y="50%" text-anchor="middle" font-size="30" font-family="sans-serif" fill="#1b1240">${t}</text></svg>`);
 const Q=[
- {t:'bow',q:'Placeholder question 1',img:ph('IMAGE 1'),o:['Answer A','Answer B','Answer C','Answer D'],a:0},
- {t:'bow',q:'Placeholder question 2',img:ph('IMAGE 2'),o:['Answer A','Answer B','Answer C','Answer D'],a:2},
- {t:'space',q:'Placeholder question 3',img:ph('IMAGE 3'),o:['Answer A','Answer B','Answer C','Answer D'],a:1},
- {t:'space',q:'Placeholder question 4',img:ph('IMAGE 4'),o:['Answer A','Answer B','Answer C','Answer D'],a:3},
- {t:'trade',q:'Placeholder question 5',img:ph('IMAGE 5'),o:['Answer A','Answer B','Answer C','Answer D','Answer E','Answer F'],a:4},
- {t:'trade',q:'Placeholder question 6',img:ph('IMAGE 6'),o:['Answer A','Answer B','Answer C','Answer D','Answer E','Answer F'],a:1},
- {t:'tycoon',q:'Placeholder question 7',img:null,o:['Answer A','Answer B','Answer C','Answer D'],a:0},
- {t:'tycoon',q:'Placeholder question 8',img:null,o:['Answer A','Answer B','Answer C','Answer D'],a:3},
- {t:'tycoon',q:'Placeholder question 9',img:null,o:['Answer A','Answer B','Answer C','Answer D'],a:2},
- {t:'tycoon',q:'Placeholder question 10',img:null,o:['Answer A','Answer B','Answer C','Answer D'],a:1},
+ {t:'bow',q:'Pada lingkaran berpusat O, sudut keliling \(\angle KLM=52^\circ\). Tentukan besar sudut pusat \(\angle KOM\).',img:ph('img/1.svg'),o:['26°','78°','52°','104°'],a:3},
+ {t:'bow',q:'Garis AB merupakan diameter lingkaran dengan pusat O. Jika \(\angle BOC=60^\circ\), tentukan besar \(\angle AOC\).',img:ph('img/2.svg'),o:['30°','90°','150°','120°'],a:3},
+ {t:'space',q:'Pada lingkaran berpusat O, OM tegak lurus tali busur AB. Jika \(\angle AOM=35^\circ\), tentukan besar sudut pusat \(\angle AOB\).',img:ph('img/3.svg'),o:['35°','55°','70°','60°'],a:2},
+ {t:'space',q:'Dua lingkaran berpusat P dan Q memiliki jari-jari 4 cm dan 2 cm. Jarak kedua pusatnya 10 cm. Berapakah panjang garis singgung persekutuan dalam kedua lingkaran?',img:ph('img/4.svg'),o:['8 cm','12 cm','14 cm','10 cm'],a:0},
+ {t:'trade',q:'Sebuah lingkaran berjari-jari 14 cm memiliki sudut pusat \(\angle AOB=90^\circ\). Tentukan panjang busur AB.',img:ph('img/5.svg'),o:['22 cm','44 cm','88 cm','11 cm','67 cm','99 cm'],a:0},
+ {t:'trade',q:'Sebuah lingkaran berjari-jari 14 cm memiliki juring dengan sudut pusat \(45^\circ\). Tentukan luas juring tersebut. Gunakan \(\pi=\frac{22}{7}\).',img:ph('img/6.svg'),o:['38,5 cm²','77 cm²','154 cm²','308 cm²','1.232 cm²','616 cm²'],a:1},
+ {t:'tycoon',q:'Sebuah taman berbentuk lingkaran memiliki jari-jari 14 m. Sebagian taman dengan sudut pusat \(90^\circ\) akan ditanami bunga. Luas area yang ditanami bunga adalah ....',img:null,o:['154 m²','308 m²','616 m²','77 m²'],a:0},
+ {t:'tycoon',q:'Sebuah pizza berdiameter 56 cm dipotong sehingga satu potong memiliki sudut pusat \(45^\circ\). Luas satu potong pizza adalah.... (Gunakan \(\pi=\frac{22}{7}\)).',img:null,o:['2.464 cm²','154 cm²','308 cm²','154 cm²'],a:2},
+ {t:'tycoon',q:'Sebuah kolam berbentuk lingkaran memiliki jari-jari 21 m. Area dengan sudut pusat \(120^\circ\) akan diberi keramik. Luas area tersebut adalah.... (Gunakan \(\pi=\frac{22}{7}\)).',img:null,o:['231 m²','693 m²','462 m²','1.848 m²'],a:2},
+ {t:'tycoon',q:'Sebuah roda berbentuk lingkaran memiliki diameter 56 cm. Titik pada tepi roda menempuh busur dengan sudut pusat \(225^\circ\) untuk setiap putaran yang dilakukan. Jika roda berputar sebanyak 12 kali dengan sudut putaran yang sama, total panjang lintasan titik tersebut adalah.... (Gunakan \(\pi=\frac{22}{7}\)).',img:null,o:['1.100 cm','1.320 cm','880 cm','1390 cm'],a:1},
 ];
 const IMG_RIGHT=ph('RIGHT!'),IMG_WRONG=ph('WRONG!');   // default result images, e.g. 'img/right.png'
 const PTS=100;                                   // points per correct answer
